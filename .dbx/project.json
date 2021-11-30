@@ -1,0 +1,9 @@
+{
+  "environments": {
+    "default": {
+      "profile": "e2-demo-aws",
+      "workspace_dir": "/Shared/dbx/dbx_metrics_examples",
+      "artifact_location": "dbfs:/Shared/dbx/projects/dbx_metrics_examples"
+    }
+  }
+}

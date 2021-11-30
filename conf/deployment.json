@@ -1,0 +1,38 @@
+{
+  "default": {
+    "strict_path_adjustment_policy": true,
+    "jobs": [
+      {
+        "name": "dbx-metrics-example",
+        "new_cluster": {
+          "spark_version": "9.1.x-cpu-ml-scala2.12",
+          "node_type_id": "i3.xlarge",
+          "aws_attributes": {
+            "first_on_demand": 1,
+            "availability": "SPOT"
+          },
+          "num_workers": 2,
+          "spark_env_vars": {
+            "DD_ENV": "development",
+            "DD_API_KEY": "{{secrets/datadog/apiKey}}",
+            "DD_SITE": "datadoghq.eu"
+          }
+        },
+        "libraries": [
+          {
+            "jar": "file://metrics/target/metrics-0.0.1.jar"
+          }
+        ],
+        "max_retries": 0,
+        "spark_python_task": {
+          "python_file": "file://dbx_metrics_examples/jobs/metric_reporter/entrypoint.py"
+        },
+        "init_scripts": {
+          "dbfs": {
+            "destination": "file://scripts/datadog-integration.sh"
+          }
+        }
+      }
+    ]
+  }
+}
