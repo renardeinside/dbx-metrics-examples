@@ -28,7 +28,7 @@ class MetricReporter:
 class MetricReporterJob(Job):
     fake = Faker()
 
-    TIMEOUT_SECONDS = 60 * 10
+    TIMEOUT_SECONDS = 60 * 5
 
     def __init__(self, spark=None, init_conf=None):
         super().__init__(spark, init_conf)
@@ -82,18 +82,6 @@ class MetricReporterJob(Job):
             self.logger.info("Await finished, gracefully stopping the streams")
             for stream in self.spark.streams.active:
                 stream.stop()
-
-        datadog_log_file = pathlib.Path("/tmp/datadog_start.log")
-
-        if datadog_log_file.exists():
-            self.logger.info("===" * 10)
-            self.logger.info("Datadog init log:")
-            lines = datadog_log_file.read_text().split("\n")
-            for line in lines:
-                self.logger.info(line)
-            self.logger.info("===" * 10)
-        else:
-            self.logger.info("Datadog init log not found")
 
         self.logger.info("Metric reporter job gracefully finished")
 
