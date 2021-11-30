@@ -83,17 +83,6 @@ class MetricReporterJob(Job):
             for stream in self.spark.streams.active:
                 stream.stop()
 
-        datadog_log_file = pathlib.Path("/tmp/datadog_start.log")
-
-        if datadog_log_file.exists():
-            self.logger.info("===" * 10)
-            self.logger.info("Datadog init log:")
-            lines = datadog_log_file.read_text().split("\n")
-            for line in lines:
-                self.logger.info(line)
-            self.logger.info("===" * 10)
-        else:
-            self.logger.info("Datadog init log not found")
         self.logger.info("Metric reporter job gracefully finished")
 
 
