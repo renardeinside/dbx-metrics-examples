@@ -9,6 +9,28 @@ cat <<EOF >> /tmp/start_datadog.sh
 if [ \$DB_IS_DRIVER ]; then
   echo "On the driver. Installing Datadog ..."
 
+  cat >/databricks/driver/conf/custom-spark-metrics-name-conf.conf <<EOL
+  [driver] {
+    spark.metrics.namespace = "${CLUSTER_NAME}"
+    spark.sql.streaming.metricsEnabled = "true"
+  }
+  EOL
+
+  sudo sed -i '/^driver.sink.ganglia.class/,+4 s/^/#/g' /databricks/spark/conf/metrics.properties
+  sudo bash -c "cat <<EOF >> /databricks/spark/conf/metrics.properties
+  *.sink.statsd.class=org.apache.spark.metrics.sink.StatsdSink
+  *.sink.statsd.host=127.0.0.1
+  *.sink.statsd.port=8125
+  *.sink.statsd.prefix=spark_metrics
+  *.sink.statsd.host.unit=seconds
+  *.sink.statsd.host.period=1
+
+  master.source.jvm.class=org.apache.spark.metrics.source.JvmSource
+  worker.source.jvm.class=org.apache.spark.metrics.source.JvmSource
+  driver.source.jvm.class=org.apache.spark.metrics.source.JvmSource
+  executor.source.jvm.class=org.apache.spark.metrics.source.JvmSource
+  EOF"
+
   # CONFIGURE HOST TAGS FOR DRIVER
   DD_TAGS="environment:\${DD_ENV}","databricks_cluster_id:\${DB_CLUSTER_ID}","databricks_cluster_name:\${DB_CLUSTER_NAME}","spark_host_ip:\${SPARK_LOCAL_IP}","spark_node:driver"
 
@@ -26,6 +48,9 @@ if [ \$DB_IS_DRIVER ]; then
 
   # ENABLE LOGS IN datadog.yaml TO COLLECT DRIVER LOGS
   echo "logs_enabled: true" >> /etc/datadog-agent/datadog.yaml
+  echo "use_dogstatsd: true" >> /etc/datadog-agent/datadog.yaml
+  echo "collect_ec2_tags: yes" >> /etc/datadog-agent/datadog.yaml
+  echo "dogstatsd_port: 8125" >> /etc/datadog-agent/datadog.yaml
 
   while [ -z \$gotparams ]; do
     if [ -e "/tmp/driver-env.sh" ]; then
@@ -43,6 +68,7 @@ instances:
     - spark_url: http://\$DB_DRIVER_IP:\$DB_DRIVER_PORT
       spark_cluster_mode: spark_driver_mode
       cluster_name: \$current
+      streaming_metrics: true
 logs:
     - type: file
       path: /databricks/driver/logs/*.log
