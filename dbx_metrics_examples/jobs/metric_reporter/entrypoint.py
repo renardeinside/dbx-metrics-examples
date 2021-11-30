@@ -47,16 +47,16 @@ class MetricReporterJob(Job):
         metric = MetricReporter(self.spark, name)
         stream = (
             self.spark.readStream.format("rate")
-                .option("rowsPerSecond", 100)
-                .load()
-                .withColumn("event_timestamp", self._random_timestamp_udf())
+            .option("rowsPerSecond", 100)
+            .load()
+            .withColumn("event_timestamp", self._random_timestamp_udf())
         )
 
         def batch_processor(batch: DataFrame, _):
             batch_ts = (
                 batch.agg(F.max("event_timestamp").alias("max_ts"))
-                    .toPandas()
-                    .loc[0, "max_ts"]
+                .toPandas()
+                .loc[0, "max_ts"]
             )
             if not pd.isnull(batch_ts):
                 current_ts = dt.datetime.now()
@@ -65,9 +65,9 @@ class MetricReporterJob(Job):
 
         query = (
             stream.writeStream.foreachBatch(batch_processor)
-                .queryName(name)
-                .trigger(processingTime="5 seconds")
-                .start()
+            .queryName(name)
+            .trigger(processingTime="5 seconds")
+            .start()
         )
         return query
 

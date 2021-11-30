@@ -10,13 +10,11 @@ from dbx_metrics_examples.jobs.metric_reporter.entrypoint import MetricReporterJ
 class MetricReporterTest(unittest.TestCase):
     def setUp(self):
         self.spark = (
-            SparkSession
-                .builder
-                .master("local[*]")
-                .appName("dbx-metrics-test")
-                .config("spark.jars", "metrics/target/metrics-0.0.1.jar")
-                .config("spark.sql.shuffle.partitions", 2)
-                .getOrCreate()
+            SparkSession.builder.master("local[*]")
+            .appName("dbx-metrics-test")
+            .config("spark.jars", "metrics/target/metrics-0.0.1.jar")
+            .config("spark.sql.shuffle.partitions", 2)
+            .getOrCreate()
         )
         self.job = MetricReporterJob(spark=self.spark)
         self.job.launch(_async=True)
