@@ -16,6 +16,11 @@
             "DD_ENV": "development",
             "DD_API_KEY": "{{secrets/datadog/apiKey}}",
             "DD_SITE": "datadoghq.eu"
+          },
+          "init_scripts": {
+            "dbfs": {
+              "destination": "file://scripts/datadog-integration.sh"
+            }
           }
         },
         "libraries": [
@@ -26,11 +31,6 @@
         "max_retries": 0,
         "spark_python_task": {
           "python_file": "file://dbx_metrics_examples/jobs/metric_reporter/entrypoint.py"
-        },
-        "init_scripts": {
-          "dbfs": {
-            "destination": "file://scripts/datadog-integration.sh"
-          }
         }
       }
     ]
