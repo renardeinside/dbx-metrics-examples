@@ -26,13 +26,13 @@ conda activate dbx_metrics_examples
 
 In this example, custom metric name contains of the following elements:
 ```
-f"{metric_namespace_name}.driver.{metric_name}.{gauge_name}"
+{metric_namespace_name}.driver.{metric_name}.{gauge_name}
 ```
 Where components are the following:
 * `metric_namespace_name` is taken from `spark.metrics.namespace` conf parameter. 
 Please note that this parameter shall be set before the start of the Spark Session. In the Datadog integration, we set this parameter during the init script.
-* `metric_name` is a property set when initializing the `MetricReporter` class.
-* `gauge_name` is a property set when initializing the `MetricReporter` class.
+* `metric_name` is a property set when initializing the `MetricReporter` class in Python.
+* `gauge_name` is a property set when initializing the `MetricReporter` class in Python.
 
 ### Metrics exposure in Ganglia
 
