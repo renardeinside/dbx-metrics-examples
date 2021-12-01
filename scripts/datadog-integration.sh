@@ -14,12 +14,12 @@ if [[ $DB_IS_DRIVER = "TRUE" ]]; then
 EOF"
 
   #modify metrics config
+  sudo sed -i '/^driver.sink.ganglia.class/,+4 s/^/#/g' /databricks/spark/conf/metrics.properties
   sudo bash -c "cat <<EOF >> /databricks/spark/conf/metrics.properties
 *.sink.statsd.class=org.apache.spark.metrics.sink.StatsdSink
 *.sink.statsd.host=localhost
 *.sink.statsd.port=8125
 *.sink.statsd.prefix=spark
-
 master.source.jvm.class=org.apache.spark.metrics.source.JvmSource
 worker.source.jvm.class=org.apache.spark.metrics.source.JvmSource
 driver.source.jvm.class=org.apache.spark.metrics.source.JvmSource

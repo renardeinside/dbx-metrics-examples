@@ -1,8 +1,8 @@
-build-metrics:
+package:
 	mvn clean package
 
-local-test: build-metrics
+test: package
 	pytest --cov
 
-deploy-with-jar: build-metrics
+deploy: package
 	dbx deploy --jobs=dbx-metrics-example

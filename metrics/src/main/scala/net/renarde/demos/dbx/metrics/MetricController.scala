@@ -6,8 +6,8 @@ import org.apache.spark.metrics.source.{GaugeControl, LatencyMetricSource}
 
 object MetricController extends Logging {
 
-  def getMetric(name: String): GaugeControl = {
-    val metricSource = LatencyMetricSource(name)
+  def getMetric(metricName: String, gaugeName: String): GaugeControl = {
+    val metricSource = LatencyMetricSource(metricName, gaugeName)
     SparkEnv.get.metricsSystem.registerSource(metricSource)
     metricSource.control
   }

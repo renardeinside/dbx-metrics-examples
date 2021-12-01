@@ -13,13 +13,14 @@ from dbx_metrics_examples.common import Job
 
 
 class MetricReporter:
-    def __init__(self, spark, name):  # noqa
+    def __init__(self, spark, metric_name: str, gauge_name: str):  # noqa
         self._metric = (
             spark._jvm.net.renarde.demos.dbx.metrics.MetricController.getMetric(  # noqa
-                name
+                metric_name, gauge_name
             )
         )
-        self.name = name
+        self.metric_name = metric_name
+        self.gauge_name = gauge_name
 
     def update(self, value: int):
         self._metric.setValue(value)
@@ -43,8 +44,10 @@ class MetricReporterJob(Job):
         time.sleep(seconds)
         self.logger.info(f"Waiting in the main thread for {seconds} seconds - finished")
 
-    def get_query(self, name: str) -> StreamingQuery:
-        metric = MetricReporter(self.spark, name)
+    def get_query(self, query_name: str) -> StreamingQuery:
+        metric = MetricReporter(
+            self.spark, metric_name=query_name, gauge_name="event_latency"
+        )
         stream = (
             self.spark.readStream.format("rate")
             .option("rowsPerSecond", 100)
@@ -65,7 +68,7 @@ class MetricReporterJob(Job):
 
         query = (
             stream.writeStream.foreachBatch(batch_processor)
-            .queryName(name)
+            .queryName(query_name)
             .trigger(processingTime="5 seconds")
             .start()
         )
