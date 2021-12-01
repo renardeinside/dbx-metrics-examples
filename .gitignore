@@ -34,3 +34,5 @@ htmlcov/*
 
 # local mlflow files
 mlruns/
+
+temp/
