@@ -38,20 +38,21 @@ Please note that this parameter shall be set before the start of the Spark Sessi
 
 After launching the sample job in Python, you can go to the cluster metrics section and search for "latency" metric:
 
-![Alt text](images/ganglia.png "Title")
+![Ganglia](images/ganglia.png "Ganglia")
 
 
-### Reporting metrics to Datadog 
+### Metrics exposure in Datadog
 
 
-In this example a customized init script is used. Main issue with official integration is that it doesn't include custom metrics. 
+In this example a customized init script is used to capture the customized metrics. We're using statsd sink and then consume statsd metrics in Datadog Agent.
 
 1. Add Datadog API Key:
 ```
 databricks secrets create-scope --scope=datadog
 databricks secrets put --scope=datadog --key=apiKey --string-value=... # better to read from the file for better security
 ```
-
 2. Configure the init-script (`scripts/datadog-integration.sh`) and env variables. `conf/deployment.json` contains an example configuration.
 
-3. 
+3. You can analyse these metrics in Datadog by searching for `spark.metrics.driver.{metric_name}.{gauge_name}`, for example:
+
+![Datadog](images/datadog.png "Datadog")
