@@ -5,13 +5,21 @@ echo "Running on the driver? $DB_IS_DRIVER"
 if [[ $DB_IS_DRIVER = "TRUE" ]]; then
   echo "Driver ip: $DB_DRIVER_IP"
 
+  # modify driver config
+  sudo bash -c "cat <<EOF >> /databricks/driver/conf/custom-spark-metrics-name-conf.conf
+[driver] {
+  spark.metrics.namespace = metrics
+  spark.sql.streaming.metricsEnabled = true
+}
+EOF"
+
   #modify metrics config
-  sudo sed -i '/^driver.sink.ganglia.class/,+4 s/^/#/g' /databricks/spark/conf/metrics.properties
   sudo bash -c "cat <<EOF >> /databricks/spark/conf/metrics.properties
 *.sink.statsd.class=org.apache.spark.metrics.sink.StatsdSink
 *.sink.statsd.host=localhost
 *.sink.statsd.port=8125
 *.sink.statsd.prefix=spark
+
 master.source.jvm.class=org.apache.spark.metrics.source.JvmSource
 worker.source.jvm.class=org.apache.spark.metrics.source.JvmSource
 driver.source.jvm.class=org.apache.spark.metrics.source.JvmSource
@@ -41,36 +49,22 @@ dogstatsd_stats_enable: false
 logs_enabled: true
 EOF"
 
-  #FIND THE SPARK UI PORT ON DRIVER
-  while [ -z "$gotparams" ]; do
-    if [ -e "/tmp/driver-env.sh" ]; then
-      DB_DRIVER_PORT=$(grep -i "CONF_UI_PORT" /tmp/driver-env.sh | cut -d'=' -f2)
-      gotparams=TRUE
-    fi
-    sleep 2
-  done
-
-  current=$(hostname -I | xargs)
-
   #CONFIGURE ADDITIONAL SPARK METRICS AND LOGS
   sudo bash -c "cat <<EOF >> /etc/datadog-agent/conf.d/spark.yaml
 init_config:
-  instances:
-      - spark_url: http://$DB_DRIVER_IP:$DB_DRIVER_PORT
-        spark_cluster_mode: spark_driver_mode
-        cluster_name: $current
-  logs:
-      - type: file
-        path: /databricks/driver/logs/*.log
-        source: spark
-        service: databricks
-        log_processing_rules:
-          - type: multi_line
-            name: new_log_start_with_date
-            pattern: \d{2,4}[\-\/]\d{2,4}[\-\/]\d{2,4}.*
+
+logs:
+    - type: file
+      path: /databricks/driver/logs/*.log
+      source: spark
+      service: databricks
+      log_processing_rules:
+        - type: multi_line
+          name: new_log_start_with_date
+          pattern: \d{2,4}[\-\/]\d{2,4}[\-\/]\d{2,4}.*
 EOF"
 
   #START THE AGENT
-  sudo service datadog-agent start
+  sudo service datadog-agent restart
 
 fi

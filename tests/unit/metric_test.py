@@ -14,6 +14,7 @@ class MetricReporterTest(unittest.TestCase):
             .appName("dbx-metrics-test")
             .config("spark.jars", "metrics/target/metrics-0.0.1.jar")
             .config("spark.sql.shuffle.partitions", 2)
+            .config("spark.metrics.namespace", "spark")
             .getOrCreate()
         )
         self.job = MetricReporterJob(spark=self.spark)
