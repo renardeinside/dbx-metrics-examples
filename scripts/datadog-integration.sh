@@ -13,7 +13,7 @@ if [[ $DB_IS_DRIVER = "TRUE" ]]; then
 }
 EOF"
 
-  #modify metrics config
+  # modify metrics config
   sudo sed -i '/^driver.sink.ganglia.class/,+4 s/^/#/g' /databricks/spark/conf/metrics.properties
   sudo bash -c "cat <<EOF >> /databricks/spark/conf/metrics.properties
 *.sink.statsd.class=org.apache.spark.metrics.sink.StatsdSink
@@ -26,7 +26,7 @@ driver.source.jvm.class=org.apache.spark.metrics.source.JvmSource
 executor.source.jvm.class=org.apache.spark.metrics.source.JvmSource
 EOF"
 
-  #INSTALL DATADOG AGENT
+  # INSTALL DATADOG AGENT
   DD_TAGS="environment:${DD_ENV},databricks_cluster_id:${DB_CLUSTER_ID},spark_host_ip:${SPARK_LOCAL_IP}, spark_node:driver"
 
   DD_AGENT_MAJOR_VERSION=7 DD_API_KEY=$DD_API_KEY DD_HOST_TAGS=$DD_TAGS bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)"
@@ -49,7 +49,7 @@ dogstatsd_stats_enable: false
 logs_enabled: true
 EOF"
 
-  #CONFIGURE ADDITIONAL SPARK METRICS AND LOGS
+  # CONFIGURE ADDITIONAL SPARK METRICS AND LOGS
   sudo bash -c "cat <<EOF >> /etc/datadog-agent/conf.d/spark.yaml
 init_config:
 
@@ -64,7 +64,7 @@ logs:
           pattern: \d{2,4}[\-\/]\d{2,4}[\-\/]\d{2,4}.*
 EOF"
 
-  #START THE AGENT
+  # START THE AGENT
   sudo service datadog-agent restart
 
 fi
