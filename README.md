@@ -1,4 +1,4 @@
-## Databricks metrics examples
+## Databricks custom metrics examples
 
 
 This repository collects examples of working with custom metrics in Spark on Databricks, in particular:
