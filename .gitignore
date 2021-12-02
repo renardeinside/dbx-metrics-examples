@@ -36,3 +36,6 @@ htmlcov/*
 mlruns/
 
 temp/
+
+# generated Azure Monitoring jars
+tools/azure-monitoring/generated/*.jar
