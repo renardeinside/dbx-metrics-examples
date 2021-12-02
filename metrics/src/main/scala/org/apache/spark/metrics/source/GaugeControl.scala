@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 class GaugeControl extends Serializable {
 
+  // we use atomic long here to avoid issues while setting the value in multi threaded environments
   private val valueRef = new AtomicLong()
 
   def setValue(newValue: Long): Unit = {
