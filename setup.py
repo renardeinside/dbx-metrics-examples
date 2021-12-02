@@ -9,6 +9,6 @@ setup(
     setup_requires=["wheel"],
     version=__version__,
     description="Databricks metrics examples",
-    author="",
+    author="Ivan Trusov",
     install_requires=INSTALL_REQUIRES,
 )

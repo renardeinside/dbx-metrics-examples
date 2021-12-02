@@ -20,6 +20,8 @@ Python setup:
 ```
 conda create --name dbx_metrics_examples python=3.7
 conda activate dbx_metrics_examples
+pip install -r unit-requirements.txt
+pip install -e .
 ```
 
 ### Metric naming convention 
