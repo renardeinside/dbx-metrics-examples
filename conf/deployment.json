@@ -65,5 +65,37 @@
         }
       }
     ]
+  },
+  "gcp": {
+    "strict_path_adjustment_policy": true,
+    "jobs": [
+      {
+        "name": "dbx-metrics-example",
+        "new_cluster": {
+          "spark_version": "9.1.x-cpu-ml-scala2.12",
+          "node_type_id": "n1-standard-4",
+          "num_workers": 1,
+          "spark_env_vars": {
+            "DD_ENV": "development-gcp",
+            "DD_API_KEY": "{{secrets/datadog/apiKey}}",
+            "DD_SITE": "datadoghq.eu"
+          },
+          "init_scripts": {
+            "dbfs": {
+              "destination": "file://scripts/datadog-integration.sh"
+            }
+          }
+        },
+        "libraries": [
+          {
+            "jar": "file://metrics/target/metrics-0.0.1.jar"
+          }
+        ],
+        "max_retries": 0,
+        "spark_python_task": {
+          "python_file": "file://dbx_metrics_examples/jobs/metric_reporter/entrypoint.py"
+        }
+      }
+    ]
   }
 }

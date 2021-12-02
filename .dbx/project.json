@@ -9,6 +9,11 @@
             "profile": "itrusov-dbx",
             "workspace_dir": "/Shared/dbx/projects/dbx-metrics-examples",
             "artifact_location": "dbfs:/dbx/dbx-metrics-examples"
+        },
+        "gcp": {
+            "profile": "gcp-fe",
+            "workspace_dir": "/Shared/dbx/projects/dbx-metrics-examples",
+            "artifact_location": "dbfs:/dbx/dbx-metrics-examples"
         }
     }
 }

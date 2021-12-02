@@ -24,3 +24,10 @@ deploy-azure:
 
 launch-azure:
 	dbx launch -e azure --job=dbx-metrics-example --trace
+
+
+deploy-gcp-datadog: package
+	dbx deploy -e gcp --jobs=dbx-metrics-example
+
+launch-gcp-datadog:
+	dbx launch -e gcp --job=dbx-metrics-example --trace
