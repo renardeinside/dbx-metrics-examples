@@ -4,5 +4,5 @@ package:
 test: package
 	pytest --cov
 
-deploy: package
-	dbx deploy --jobs=dbx-metrics-example
+deploy-aws-datadog: package
+	dbx deploy -e aws --jobs=dbx-metrics-example

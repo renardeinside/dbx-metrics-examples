@@ -1,9 +1,14 @@
 {
-  "environments": {
-    "default": {
-      "profile": "e2-demo-aws",
-      "workspace_dir": "/Shared/dbx/dbx_metrics_examples",
-      "artifact_location": "dbfs:/Shared/dbx/projects/dbx_metrics_examples"
+    "environments": {
+        "aws": {
+            "profile": "e2-demo-aws",
+            "workspace_dir": "/Shared/dbx/dbx_metrics_examples",
+            "artifact_location": "dbfs:/Shared/dbx/projects/dbx_metrics_examples"
+        },
+        "azure": {
+            "profile": "itrusov-dbx",
+            "workspace_dir": "/Shared/dbx/projects/dbx-metrics-examples",
+            "artifact_location": "dbfs:/dbx/dbx-metrics-examples"
+        }
     }
-  }
 }

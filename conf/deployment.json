@@ -1,5 +1,5 @@
 {
-  "default": {
+  "aws": {
     "strict_path_adjustment_policy": true,
     "jobs": [
       {
